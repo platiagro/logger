@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ master, v*-branch ]
+    branches: [ main, v*-branch ]
   pull_request:
-    branches: [ master, v*-branch ]
+    branches: [ main, v*-branch ]
 
 jobs:
   build:
@@ -115,7 +115,7 @@ jobs:
       id: vars
       run: |
         VERSION=$(python -c "import logger; print(logger.__version__)")
-        if [ ${{ github.ref }} = "refs/heads/master" ]; then
+        if [ ${{ github.ref }} = "refs/heads/main" ]; then
           echo ::set-output name=TAG::${VERSION}-SNAPSHOT
         elif [[ ${{ github.ref }} =~ ^refs/heads/v.*-branch$ ]]; then
           echo ::set-output name=TAG::${VERSION}
