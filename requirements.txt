@@ -1,0 +1,7 @@
+# WSGI server
+Flask==1.1.1
+Flask-Cors==3.0.8
+# Make HTTP requests simpler and more human-friendly
+requests>=2.23.0
+# Helps with structured data operations
+pandas>=0.25.3
