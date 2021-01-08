@@ -98,7 +98,6 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest pytest-cov
-        platiagro-init-db
         coverage erase
         coverage run --branch --source=logger -m pytest
         coverage xml -i
