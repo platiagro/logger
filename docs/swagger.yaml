@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: PlatIAgro Logger API
+  version: "0.2.0"
+  description: >
+    These are the docs for PlatIAgro Logger API.
+    The endpoints below are usually accessed by the Seldon Deployment containers.
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: "Logger"
+    description: ""
+paths:
+  /:
+    get:
+      summary: "Health check."
+      tags:
+        - "Logger"
+      responses:
+        "200":
+          $ref: "#/components/responses/HealthCheck"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+    post:
+      summary: "Create a new Log."
+      tags:
+        - "Logger"
+      requestBody:
+        $ref: "#/components/requestBodies/Log"
+      responses:
+        "200":
+          $ref: "#/components/responses/Log"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+components:
+  schemas:
+    AnyValue:
+      description: Can be any value - string, number, boolean, array or object.
+    Log:
+      oneOf:
+        - $ref: "#/components/schemas/LogData"
+        - $ref: "#/components/schemas/LogStrData"
+        - $ref: "#/components/schemas/LogBinData"
+    LogData:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            ndarray:
+              type: array
+              items: {}
+            names:
+              type: array
+              items:
+                type: string
+        meta:
+          type: object
+    LogStrData:
+      type: object
+      properties:
+        strData:
+          type: string
+        meta:
+          type: object
+    LogBinData:
+      type: object
+      properties:
+        strData:
+          type: string
+        meta:
+          type: object
+  requestBodies:
+    Log:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Log"
+          examples:
+            logdata:
+              summary: Tabular data
+              value:
+                data:
+                  ndarray: [[1, 2], [3, 4]]
+            strdata:
+              summary: Plain text
+              value:
+                strData: "some text"
+            bindata:
+              summary: Binary data (Base64 encoded)
+              value:
+                binData: "Cg=="
+  responses:
+    HealthCheck:
+      description: ""
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: pong
+    Log:
+      description: ""
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Log"
+    BadRequest:
+      description: ""
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+            required:
+              - message
+    InternalServerError:
+      description: ""
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "An internal failure occurred."
+            required:
+              - message
+    ServiceUnavailable:
+      description: ""
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "The service is unavailable. Try your call again."
+            required:
+              - message
